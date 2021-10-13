@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from store.models import *
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -67,3 +68,19 @@ def viewLoanedBooks(request):
     # START YOUR CODE HERE
     context['books'] = BookCopy.objects.filter(borrower=request.user)
     return render(request, template_name, context=context)
+
+@csrf_exempt
+@login_required
+def returnBookView(request):
+    response_data = {
+        'message': None,
+    }
+    print(request.POST.get('cid'))
+    copy_id = request.POST.get('cid')
+    c = BookCopy.objects.get(id__exact=copy_id)
+    c.borrow_date = None
+    c.available = True
+    c.borrower = None
+    c.save()
+    response_data['message'] = 'success'
+    return JsonResponse(response_data)
