@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from store.models import *
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -50,4 +51,19 @@ def bookDetailView(request, bid):
             x = rate[0].rating
             context['your_rating'] = x
 
+    return render(request, template_name, context=context)
+
+
+@login_required
+def viewLoanedBooks(request):
+    template_name = 'store/loaned_books.html'
+    context = {
+        'books': None,
+    }
+    '''
+    The above key 'books' in the context dictionary should contain a list of instances of the 
+    BookCopy model. Only those book copies should be included which have been loaned by the user.
+    '''
+    # START YOUR CODE HERE
+    context['books'] = BookCopy.objects.filter(borrower=request.user)
     return render(request, template_name, context=context)
