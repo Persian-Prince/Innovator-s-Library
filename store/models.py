@@ -6,13 +6,20 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Book Model
 
+
 class Book(models.Model):
-    title = models.CharField(max_length=100)
-    author = models.CharField(max_length=100)
-    genre = models.CharField(max_length=50, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    mrp = models.PositiveIntegerField(blank=True, null=True)
-    rating = models.PositiveSmallIntegerField(blank=True, null=True, validators=[MaxValueValidator(10), MinValueValidator(1)])
+    title = models.CharField(max_length=50)
+    author = models.CharField(max_length=50)
+    genre = models.CharField(max_length=50)
+    description = models.TextField(null=True)
+    mrp = models.PositiveIntegerField()
+    rating = models.FloatField(default=0.0)
+
+    class Meta:
+        ordering = ('title',)
+
+    def __str__(self):
+        return f'{self.title} by {self.author}'
 
 #BookCopy Model
 
