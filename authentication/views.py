@@ -2,11 +2,34 @@ from django.shortcuts import render
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
 # Create your views here.
 
 
 def loginView(request):
     pass
+
+@csrf_exempt
+def loggingIn(request):
+    if request.method=="POST":
+        username1 = request.POST.get('username')
+        password1 = request.POST.get('password')
+
+        if(username1 == "" or password1 == ""):
+            messages.info(request, 'Please fill all fields')
+            return redirect("/userAccounts/loggingIn/")
+        user = authenticate(username=username1, password=password1)
+        if user is not None:
+            login(request, user)
+            return redirect("/books/")
+
+            # A backend authenticated the credentials
+        else:
+            messages.info(request, 'Inavlid Username/Password')
+            return redirect("/userAccounts/loggingIn/")
+    return render(request, 'login.html')
+
 
 
 def logoutView(request):
