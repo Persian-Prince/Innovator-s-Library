@@ -84,3 +84,40 @@ def returnBookView(request):
     c.save()
     response_data['message'] = 'success'
     return JsonResponse(response_data)
+
+
+@csrf_exempt
+@login_required
+def rateBookView(request):
+    response_data = {
+        'message': None,
+    }
+
+    book_id = request.POST.get('bid')
+    rateing = float(request.POST.get('brate'))
+    list_book = Review.objects.filter(
+        book_reviewed=Book.objects.get(id__exact=book_id))
+    list_user_book = Review.objects.filter(
+        Q(book_reviewed=Book.objects.get(id__exact=book_id)) & Q(reviewer=request.user))
+    if len(list_user_book) == 0:
+        b = Book.objects.get(id__exact=book_id)
+        b.rating = ((b.rating*len(list_book))+rateing)/(len(list_book)+1)
+        b.save()
+        c = Review(book_reviewed=Book.objects.get(id__exact=book_id),
+                   rating=rateing, reviewer=request.user)
+        c.save()
+    else:
+        c = Review.objects.filter(Q(book_reviewed=Book.objects.get(
+            id__exact=book_id)) & Q(reviewer=request.user))[0]
+        previous_rating_by_user = c.rating
+        c.rating = rateing
+        c.save()
+        b = Book.objects.get(id__exact=book_id)
+        previous_rating_of_book = b.rating
+        new_rating = ((previous_rating_of_book*len(list_book)) -
+                      previous_rating_by_user+rateing)/len(list_book)
+        b.rating = new_rating
+        b.save()
+
+    response_data['message'] = 'success'
+    return JsonResponse(response_data)
