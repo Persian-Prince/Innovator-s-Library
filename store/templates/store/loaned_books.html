@@ -1,1 +1,62 @@
-{% comment %} Create HTML page to view loaned books {% endcomment %}
+{% extends "store/base.html" %}
+
+{% block title %}
+<title>
+    Loaned Books List | Library
+</title>
+{% endblock %}
+
+{% block content %}
+
+<h3>Loaned Books list</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+        <th scope="col">#</th>
+        <th scope="col">Title</th>
+        <th scope="col">Author</th>
+        <th scope="col">Genre</th>
+        <th scope="col">Borrow Date</th>
+        <th scope="col">Return Buttons</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for copy in books %}
+        <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td><a href="/book/{{copy.book.id}}/">{{ copy.book.title }}</a></td>
+        <td>{{ copy.book.author }}</td>
+        <td>{{ copy.book.genre }}</td>
+        <td>{{ copy.borrow_date }}</td>
+        <td><button class="btn btn-primary" onclick="returnBook({{ copy.id }})">Return {{ copy.book.title }}</button></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<script>
+// Fill in this function by yourself. It should make a post call to the returnBookView and display an appropriate message
+function returnBook(bid){
+    $.ajax({
+        url: "{% url 'return-book' %}",
+        method: "POST",
+        data: {
+            cid: bid
+        },
+        success: function(data, status, xhr){
+            if(data['message'] == "success"){
+                alert("Book successfully returned");
+                window.location.replace("/books/loaned");
+            }
+            else{
+                alert("Unable to return this book");
+            }
+        },
+        error: function(xhr, status, err){
+            alert("Some error occured");
+        }
+
+    })
+}
+</script>
+{% endblock %}
