@@ -49,3 +49,7 @@ def registerView(request):
     else:
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
+
+@csrf_exempt
+def registerScreenView(request):
+    return render(request, 'register.html')
