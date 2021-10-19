@@ -6,9 +6,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 # Create your views here.
 
-
+@csrf_exempt
 def loginView(request):
-    pass
+    return render(request, 'login.html')
 
 @csrf_exempt
 def loggingIn(request):
