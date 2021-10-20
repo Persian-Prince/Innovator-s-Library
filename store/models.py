@@ -38,5 +38,6 @@ class Review(models.Model):
         validators=[MaxValueValidator(10), MinValueValidator(0)]
      ) 
     reviewer = models.ForeignKey(User, related_name='reviewer', null=True, blank=True, on_delete=models.CASCADE)
+    desc = models.TextField(null=True)
     def __str__(self):
         return f'{self.rating}: {self.book_reviewed} by User {self.reviewer}' 
