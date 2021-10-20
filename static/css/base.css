@@ -1,0 +1,19 @@
+body 
+{ background-color: #e6e6e6;
+}
+
+a {
+  padding: 5px 0px;
+  text-decoration: none;
+  font-size:25px;
+  color: #ffffff;
+  background-color: rgb(16, 2, 56);
+  margin: 10px 8px;
+  display: flex;
+  justify-content: center;
+}
+
+a:hover{
+  color:#8bdbdb;
+  text-decoration: none;
+}
