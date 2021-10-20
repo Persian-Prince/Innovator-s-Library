@@ -1,10 +1,12 @@
-from django.shortcuts import render
-from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import login, logout
+from django.contrib.auth import authenticate
 from django.contrib import messages
+
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
 # Create your views here.
+
 
 @csrf_exempt
 def loginView(request):
@@ -12,7 +14,7 @@ def loginView(request):
 
 @csrf_exempt
 def loggingIn(request):
-    if request.method=="POST":
+    if request.method=="POST":    
         username1 = request.POST.get('username')
         password1 = request.POST.get('password')
 
@@ -30,26 +32,41 @@ def loggingIn(request):
             return redirect("/userAccounts/loggingIn/")
     return render(request, 'login.html')
 
-
-
+@csrf_exempt
 def logoutView(request):
     pass
 
 
-def registerView(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect('home')
-    else:
-        form = UserCreationForm()
-    return render(request, 'signup.html', {'form': form})
-
 @csrf_exempt
 def registerScreenView(request):
     return render(request, 'register.html')
+
+
+@csrf_exempt
+def registerView(request):
+    if request.method == "POST":
+        firstname = request.POST.get('firstname')
+        lastname = request.POST.get('lastname')
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        if(username == "" or password == "" or email == "" or firstname == ""):
+            messages.info(request, 'Please fill all fields')
+            return redirect("/userAccounts/registerScreen/")
+
+        if User.objects.filter(username=username).exists():
+            messages.info(request, 'Username already exists')
+            return redirect("/userAccounts/registerScreen/")
+
+        if User.objects.filter(email=email).exists():
+            messages.info(request, 'Email already exists')
+            return redirect("/userAccounts/registerScreen/")
+        user = User.objects.create_user(
+            username, email, password)
+        user.last_name = lastname
+        user.first_name = firstname
+        user.save()
+        if user is not None:
+            login(request, user)
+            return redirect("/books/")

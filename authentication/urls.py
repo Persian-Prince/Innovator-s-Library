@@ -6,5 +6,5 @@ urlpatterns = [
     path('loggingIn/', loggingIn, name="loggingIn"),
     path('registerScreen/', registerScreenView, name="registerScreen"),
     path('register/', registerView, name="register"),
+    
 ]
-

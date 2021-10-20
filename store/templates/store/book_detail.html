@@ -1,1 +1,94 @@
-{% comment %} Create HTML page to view book detail {% endcomment %}
+{% extends "store/base.html" %}
+
+{% block title %}
+<title>{{ book.title }} | Library</title>
+{% endblock %}
+
+{% block content %}
+<h2>Title: {{ book.title }}</h2>
+
+<dl>
+	<dt>Genre:</dt>
+	<dd>{{ book.genre }}</dd>
+	<dt>Author:</dt>
+	<dd>{{ book.author }}</dd>
+	<dt>Description:</dt>
+	<dd>{{ book.description }}</dd>
+	<dt>Rating:</dt>
+	<dd>{{ book.rating }}</dd>
+	{% if user.is_authenticated %}
+	<dt>You rated:</dt>
+	<dd>{{ your_rating }}</dd>
+	{% endif %}
+	<dt>MRP:</dt>
+	<dd>Rs. {{ book.mrp }}</dd>
+	<dt>Available Copies:</dt>
+	<dd>{{ num_available }}</dd>
+	{% if user.is_authenticated %}
+	<dt>Rate {{ book.title }}:</dt>
+	<select id="rate" name="rate">
+		<option value="0">0</option>
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+		<option value="6">6</option>
+		<option value="7">7</option>
+		<option value="8">8</option>
+		<option value="9">9</option>
+		<option value="10">10</option>
+	</select>
+	{% comment %} <input type="number" id="rate" name="rate" min="0" max="10"> {% endcomment %}
+	<button class="btn btn-primary" id="rate-button" type="submit">Rate</button>
+</dl>
+<button class="btn btn-primary" id="loan-button">Loan {{ book.title }}</button>
+{% endif %}
+<script>
+	$("#loan-button").click(function () {
+		$.ajax({
+			url: "{% url 'loan-book' %}",
+			method: "POST",
+			data: {
+				bid: {{ book.id }}
+		},
+		success: function (data, status, xhr) {
+			if (data['message'] == "success") {
+				alert("Book successfully issued");
+				window.location.replace("/books/loaned");
+			}
+			else {
+				alert("Unable to issue this book");
+			}
+		},
+		error: function (xhr, status, err) {
+			alert("Some error occured");
+		}
+
+	})
+})
+	$("#rate-button").click(function () {
+
+		$.ajax({
+			url: "{% url 'rate-book' %}",
+			method: "POST",
+			data: {
+				bid: {{ book.id }},
+		brate: $("#rate").val()
+		},
+		success: function (data, status, xhr) {
+			if (data['message'] == "success") {
+				alert("Book Rated successfully");
+				window.location.replace("/books");
+			}
+			else {
+				alert("Unable to rate this book");
+			}
+		},
+		error: function (xhr, status, err) {
+			alert("Some error occured");
+		}
+	})    
+})
+</script>
+{% endblock %}

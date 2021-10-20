@@ -1,5 +1,3 @@
-{% comment %} Create HTML page to view book list {% endcomment %}
-
 {% extends "store/base.html" %}
 
 {% block title %}
@@ -54,7 +52,7 @@
 var base_url=location.protocol + '//' + location.host + location.pathname;
 
 $("#search_button").click(function(){
-    var final_url = base_url.replace(/*$, ""*/);
+    var final_url = base_url.replace(/\/$/, "");
     title_value = $("#title").val();
     final_url = final_url + "?title=" + encodeURIComponent(title_value);
     author_value = $("#author").val();
