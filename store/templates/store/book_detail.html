@@ -38,12 +38,24 @@
 		<option value="8">8</option>
 		<option value="9">9</option>
 		<option value="10">10</option>
-	</select>
-	{% comment %} <input type="number" id="rate" name="rate" min="0" max="10"> {% endcomment %}
+	</select><br>
+	<h6>Leave comments below: </h6>
+    <textarea rows = "5" cols = "60" name = "desc" id= "desc"></textarea><br>
+	{% comment %} <input type="number" id="rate" name="rate" min="0" max="10"> {% endcomment %}<br>
 	<button class="btn btn-primary" id="rate-button" type="submit">Rate</button>
 </dl>
 <button class="btn btn-primary" id="loan-button">Loan {{ book.title }}</button>
 {% endif %}
+<br><br><hr style="border-width: 5px">
+    <h4>See recent customer reviews</h4>
+    {% for bookRating in book_allRatings %}
+        <hr>
+		<h5>{{ bookRating.reviewer }} : {{ bookRating.rating }}</h5>
+		{% if bookRating.desc %}
+		<h6>{{ bookRating.desc }}</h6>
+		{% endif%}
+    {% endfor %}
+
 <script>
 	$("#loan-button").click(function () {
 		$.ajax({
@@ -74,7 +86,8 @@
 			method: "POST",
 			data: {
 				bid: {{ book.id }},
-		brate: $("#rate").val()
+		brate: $("#rate").val(),
+		bdesc: $("#desc").val(),
 		},
 		success: function (data, status, xhr) {
 			if (data['message'] == "success") {

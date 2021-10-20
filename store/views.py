@@ -31,8 +31,9 @@ def bookDetailView(request, bid):
         rate = Review.objects.filter(Q(book_reviewed=Book.objects.get(id__exact=bid)) & Q(reviewer=request.user))
         if rate.count()>0:
             x=rate[0].rating
+            d=rate[0].desc
             context['your_rating']=x
-    
+    context['book_allRatings'] = Review.objects.filter(book_reviewed__pk=bid)[:3]
     
     return render(request, template_name, context=context)
 
@@ -126,18 +127,20 @@ def rateBookView(request):
     
     book_id = request.POST.get('bid')
     rateing = float(request.POST.get('brate'))
+    desc = request.POST.get('bdesc')
     list_book = Review.objects.filter(book_reviewed=Book.objects.get(id__exact=book_id))
     list_user_book = Review.objects.filter(Q(book_reviewed=Book.objects.get(id__exact=book_id)) & Q(reviewer=request.user))
     if len(list_user_book)==0:
         b=Book.objects.get(id__exact=book_id)
         b.rating=((b.rating*len(list_book))+rateing)/(len(list_book)+1)
         b.save()
-        c=Review(book_reviewed=Book.objects.get(id__exact=book_id), rating=rateing, reviewer=request.user)
+        c=Review(book_reviewed=Book.objects.get(id__exact=book_id), rating=rateing, reviewer=request.user, desc=desc)
         c.save()
     else:
         c=Review.objects.filter(Q(book_reviewed=Book.objects.get(id__exact=book_id)) & Q(reviewer=request.user))[0]
         previous_rating_by_user = c.rating
         c.rating = rateing
+        c.desc = desc
         c.save()
         b = Book.objects.get(id__exact=book_id)
         previous_rating_of_book = b.rating
