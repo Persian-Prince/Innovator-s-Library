@@ -21,46 +21,46 @@
     </div>
 </div><br>
 <div class="row">
-    <button id="search_button" class="btn btn-primary">Search</button>
+    <button id="search_button" class="btn btn-primary" background-color="green">Search</button>
 </div>
 <table class="table">
     <thead>
         <tr>
-        <th scope="col">#</th>
-        <th scope="col">Title</th>
-        <th scope="col">Author</th>
-        <th scope="col">Genre</th>
-        <th scope="col">Rating</th>
-        <th scope="col">MRP</th>
+            <th scope="col">#</th>
+            <th scope="col">Title</th>
+            <th scope="col">Author</th>
+            <th scope="col">Genre</th>
+            <th scope="col">Rating</th>
+            <th scope="col">MRP</th>
         </tr>
     </thead>
     <tbody>
         {% for book in books %}
         <tr>
-        <th scope="row">{{ forloop.counter }}</th>
-        <td><a href="/book/{{ book.id }}/">{{ book.title }}</a></td>
-        <td>{{ book.author }}</td>
-        <td>{{ book.genre }}</td>
-        <td>{{ book.rating }}</td>
-        <td>{{ book.mrp }}</td>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td><a href="/book/{{ book.id }}/">{{ book.title }}</a></td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.genre }}</td>
+            <td>{{ book.rating }}</td>
+            <td>{{ book.mrp }}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 <script>
 
-var base_url=location.protocol + '//' + location.host + location.pathname;
+    var base_url = location.protocol + '//' + location.host + location.pathname;
 
-$("#search_button").click(function(){
-    var final_url = base_url.replace(/\/$/, "");
-    title_value = $("#title").val();
-    final_url = final_url + "?title=" + encodeURIComponent(title_value);
-    author_value = $("#author").val();
-    final_url = final_url + "&author=" + encodeURIComponent(author_value);
-    genre_value = $("#genre").val();
-    final_url = final_url + "&genre=" + encodeURIComponent(genre_value);
-    window.location.replace(final_url);
-});
+    $("#search_button").click(function () {
+        var final_url = base_url.replace(/\/$/, "");
+        title_value = $("#title").val();
+        final_url = final_url + "?title=" + encodeURIComponent(title_value);
+        author_value = $("#author").val();
+        final_url = final_url + "&author=" + encodeURIComponent(author_value);
+        genre_value = $("#genre").val();
+        final_url = final_url + "&genre=" + encodeURIComponent(genre_value);
+        window.location.replace(final_url);
+    });
 
 </script>
 {% endblock %}
